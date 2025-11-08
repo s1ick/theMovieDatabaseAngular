@@ -1,0 +1,21 @@
+<div
+  class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all cursor-pointer transform transition-transform duration-200 hover:-translate-y-1 h-full flex flex-col"
+  (click)="onCardClick()"
+>
+  <img
+    [src]="getImageSource()"
+    [alt]="movie().title"
+    class="w-full h-64 object-cover flex-shrink-0"
+    loading="lazy"
+    (error)="onImageError($event)"
+  />
+
+  <div class="p-4 flex-grow flex flex-col">
+    <h3 class="font-semibold text-lg truncate text-gray-900">{{ movie().title }}</h3>
+    <p class="text-gray-600 text-sm mt-1">{{ movie().year }}</p>
+
+    @if (movie().genre) {
+    <p class="text-gray-500 text-xs mt-2 truncate">{{ movie().genre.split(', ')[0] }}</p>
+    }
+  </div>
+</div>

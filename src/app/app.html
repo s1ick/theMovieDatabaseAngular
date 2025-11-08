@@ -1,0 +1,89 @@
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <app-header>
+    @if (user()) {
+    <app-user-profile [user]="user()!" />
+    }
+  </app-header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+    @if (loading()) {
+    <div class="min-h-screen flex items-center justify-center bg-gray-50">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+    } @else { @if (!user()) {
+    <app-auth />
+    } @else {
+    <div class="flex border-b border-gray-200 mb-6 space-x-4">
+      <button
+        class="px-4 py-2 font-medium text-sm rounded-t-lg transition-all duration-200 ease-in-out"
+        [class]="
+          activeTab() === 'search'
+            ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-50'
+            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+        "
+        (click)="setActiveTab('search')"
+      >
+        Search Movies
+      </button>
+
+      <button
+        class="px-4 py-2 font-medium text-sm rounded-t-lg transition-all duration-200 ease-in-out"
+        [class]="
+          activeTab() === 'favorites'
+            ? 'border-b-2 border-red-500 text-red-600 bg-red-50'
+            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+        "
+        (click)="setActiveTab('favorites')"
+      >
+        Favorites ({{ favorites().length }})
+      </button>
+
+      <button
+        class="px-4 py-2 font-medium text-sm rounded-t-lg transition-all duration-200 ease-in-out"
+        [class]="
+          activeTab() === 'recommendations'
+            ? 'border-b-2 border-purple-500 text-purple-600 bg-purple-50'
+            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+        "
+        (click)="setActiveTab('recommendations')"
+      >
+        Recommendations
+      </button>
+    </div>
+
+    @switch (activeTab()) {
+      @case ('search') {
+        <app-home (movieSelected)="selectMovie($event)" />
+      }
+      @case ('favorites') {
+        @if (hasLoadedFavorites()) {
+          <app-favorites (movieSelected)="selectMovie($event)" />
+        } @else {
+          <div class="flex justify-center items-center p-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
+            <span class="ml-3 text-gray-600">Loading favorites...</span>
+          </div>
+        }
+      }
+      @case ('recommendations') {
+        @if (hasLoadedRecommendations()) {
+          <app-recommendations (movieSelected)="selectMovie($event)" />
+        } @else {
+          <div class="flex justify-center items-center p-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+            <span class="ml-3 text-gray-600">Loading recommendations...</span>
+          </div>
+        }
+      }
+    }
+
+    @if (selectedMovieId()) {
+    <app-movie-details
+      [imdbID]="selectedMovieId()!"
+      [isFavorite]="isFavorite(selectedMovieId()!)"
+      (onClose)="closeMovieDetails()"
+      (onToggleFavorite)="toggleFavorite(selectedMovieId()!)"
+    ></app-movie-details>
+    } } }
+  </main>
+</div>

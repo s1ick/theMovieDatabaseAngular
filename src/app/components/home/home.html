@@ -1,0 +1,30 @@
+<div class="space-y-6">
+  <div class="bg-white p-4 rounded-lg shadow">
+    <app-search (search)="handleSearch($event)"></app-search>
+  </div>
+
+  @if (error()) {
+  <div class="bg-red-50 border-l-4 border-red-500 p-4">
+    <div class="flex">
+      <div class="text-red-500">
+        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm text-red-700">{{ error() }}</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    @for (movie of localMovies(); track movie.id) {
+    <app-movie-card [movie]="movie" (movieSelected)="onSelectMovie($event)"> </app-movie-card>
+    }
+  </div>
+</div>

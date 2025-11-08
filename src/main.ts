@@ -1,0 +1,11 @@
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app';
+import { appConfig } from './app/app.config';
+
+window.addEventListener('unhandledrejection', event => {
+  console.error('Unhandled promise rejection:', event.reason);
+  event.preventDefault();
+});
+
+bootstrapApplication(AppComponent, appConfig)
+  .catch(err => console.error('Bootstrap error:', err));

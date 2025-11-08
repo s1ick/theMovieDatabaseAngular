@@ -1,0 +1,20 @@
+<div class="flex items-center space-x-4">
+  <img
+    [src]="getUserAvatar()"
+    [alt]="getDisplayName()"
+    loading="lazy"
+    decoding="async"
+    class="h-8 w-8 rounded-full">
+
+  <span class="text-sm font-medium truncate max-w-xs">
+    {{ getDisplayName() }}
+  </span>
+
+  <button
+    (click)="handleLogout()"
+    [disabled]="isLoggingOut()"
+    class="px-3 py-1 text-sm text-red-600 hover:text-red-800 disabled:opacity-50 transition-colors"
+    matTooltip="Logout">
+    {{ isLoggingOut() ? 'Logging out...' : 'Logout' }}
+  </button>
+</div>

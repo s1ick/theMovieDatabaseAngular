@@ -1,0 +1,147 @@
+<div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50" (click)="close()">
+  <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col movie-details-content" (click)="$event.stopPropagation()">
+
+    <div class="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+      <button class="p-2 rounded-lg hover:bg-gray-200 transition-all duration-200 ease-in-out hover:scale-110 text-gray-600 close-button" (click)="close()">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+
+      <div class="flex gap-3 items-center">
+        <button
+          class="p-2 rounded-lg transition-all duration-200 ease-in-out hover:scale-110 favorite-button"
+          [class.text-red-500]="isFavorite()"
+          [class.text-gray-400]="!isFavorite()"
+          [class.hover:bg-red-50]="isFavorite()"
+          [class.hover:bg-gray-100]="!isFavorite()"
+          (click)="toggleFavorite()"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path [attr.d]="isFavorite() ?
+              'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' :
+              'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'"
+            />
+          </svg>
+        </button>
+
+        <button
+          class="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 ease-in-out hover:-translate-y-px export-button"
+          (click)="exportToCSV()"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Export CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+      @if (isLoading()) {
+        <div class="flex flex-col items-center justify-center p-12 min-h-48">
+          <div class="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+          <p class="text-gray-500 text-lg">Loading movie details...</p>
+        </div>
+      }
+
+      @if (!isLoading() && movie()) {
+        <div class="p-6">
+
+          <div class="flex flex-col sm:flex-row gap-6 mb-8">
+            <div class="flex-shrink-0">
+              <img
+                [src]="getImageSource()"
+                [alt]="movie().title"
+                class="w-48 h-72 object-cover rounded-lg shadow-md transition-transform duration-200 ease-in-out hover:scale-102 movie-poster"
+                (error)="onImageError($event)"
+              />
+            </div>
+
+            <div class="flex-1 min-w-0 movie-details-info">
+              <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 leading-tight">{{ movie().title }}</h1>
+
+              <div class="flex flex-wrap gap-4 mb-3 text-sm text-gray-600">
+                <span class="font-medium">{{ movie().year }}</span>
+                <span>{{ movie().runtime || 'N/A' }}</span>
+                <span class="flex items-center gap-1">
+                  ⭐ {{ movie().imdbRating || 'N/A' }}
+                </span>
+              </div>
+
+              <p class="text-gray-700 mb-4">{{ movie().genre || 'Genre not specified' }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div class="flex flex-col gap-1">
+                <span class="font-semibold text-gray-900">Director:</span>
+                <span class="text-gray-700">{{ movie().director || 'N/A' }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="font-semibold text-gray-900">Actors:</span>
+                <span class="text-gray-700">{{ movie().actors || 'N/A' }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="font-semibold text-gray-900">Writer:</span>
+                <span class="text-gray-700">{{ movie().writer || 'N/A' }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="font-semibold text-gray-900">Language:</span>
+                <span class="text-gray-700">{{ movie().language || 'N/A' }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="font-semibold text-gray-900">Country:</span>
+                <span class="text-gray-700">{{ movie().country || 'N/A' }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="font-semibold text-gray-900">Released:</span>
+                <span class="text-gray-700">{{ movie().released || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-3">Plot</h3>
+              <p class="text-gray-700 leading-relaxed mb-2">{{ movie().plot || 'Plot not available.' }}</p>
+            </div>
+
+            @if (movie().boxOffice || movie().production || movie().awards) {
+              <div class="flex flex-wrap gap-2">
+                @if (movie().boxOffice) {
+                  <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Box Office: {{ movie().boxOffice }}
+                  </span>
+                }
+                @if (movie().production) {
+                  <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Production: {{ movie().production }}
+                  </span>
+                }
+                @if (movie().awards) {
+                  <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Awards: {{ movie().awards }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (!isLoading() && !movie()) {
+        <div class="flex flex-col items-center justify-center p-12 text-center">
+          <div class="text-4xl mb-4">❌</div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-2">Failed to load movie details</h3>
+          <p class="text-gray-600 mb-4">Please try again later.</p>
+          <button
+            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            (click)="loadMovieDetails()"
+          >
+            Retry
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
