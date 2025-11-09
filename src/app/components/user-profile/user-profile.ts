@@ -24,17 +24,20 @@ export class UserProfileComponent {
   user = input.required<User>();
   isLoggingOut = signal(false);
 
-  async handleLogout() {
-    this.isLoggingOut.set(true);
-    try {
-      await this.authService.signOut();
-      window.location.href = '/';
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      this.isLoggingOut.set(false);
-    }
+async handleLogout() {
+  this.isLoggingOut.set(true);
+  try {
+    await this.authService.signOut();
+
+    const baseHref = document.querySelector('base')?.getAttribute('href') || '/';
+    window.location.href = baseHref;
+
+  } catch (error) {
+    console.error("Logout failed:", error);
+  } finally {
+    this.isLoggingOut.set(false);
   }
+}
 
   getUserAvatar(): string {
     const userData = this.user();

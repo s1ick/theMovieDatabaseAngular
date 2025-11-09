@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+   "build:gh-pages": "ng build --configuration production --base-href /theMovieDatabaseAngular/",
+    "deploy": "npm run build:gh-pages && npx angular-cli-ghpages --dir=dist/the-movie-database-angular/browser",
+    "deploy:verbose": "npm run build:gh-pages && npx angular-cli-ghpages --dir=dist/the-movie-database-angular/browser --name=\"s1ick\" --email=your-email@example.com --no-silent"
+
   },
   "prettier": {
     "printWidth": 100,
